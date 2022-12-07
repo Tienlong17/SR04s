@@ -34,7 +34,11 @@ servo13 = servo.Servo(pca.channels[13], min_pulse=440, max_pulse=2400)
 servo14 = servo.Servo(pca.channels[14], min_pulse=440, max_pulse=2400)
 servo15 = servo.Servo(pca.channels[15], min_pulse=440, max_pulse=2400)
 # We sleep in the loops to give the servo time to move into position.
-time_stop = 0.007
+time_stop = 0.02
+spam_time = 0.01
+def Rot_Angle(a, b):
+    a.angle = b
+    time.sleep(time_stop)
 def Rot_Arm_RF(angle0, angle1, angle2):
     servo0.angle = 90 - angle0 #chua fix
     time.sleep(time_stop)
@@ -42,26 +46,46 @@ def Rot_Arm_RF(angle0, angle1, angle2):
     time.sleep(time_stop)
     servo2.angle = 180- angle2
     time.sleep(time_stop)
+def Rot_Arm_RF_2(angle1, angle2):
+    servo1.angle = 90 - angle1
+    time.sleep(time_stop)
+    servo2.angle = 180- angle2
+    time.sleep(time_stop)
 
 def Rot_Arm_LF(angle0, angle1, angle2):
-    servo4.angle = 90 + angle0 #chua fix
+    servo4.angle = 90 + angle0 
     time.sleep(time_stop)
+    servo5.angle = 90 + angle1
+    time.sleep(time_stop)
+    servo6.angle = angle2
+    time.sleep(time_stop)
+def Rot_Arm_LF_2(angle1, angle2):
     servo5.angle = 90 + angle1
     time.sleep(time_stop)
     servo6.angle = angle2
     time.sleep(time_stop)
 
 def Rot_Arm_RH(angle0, angle1, angle2):
-    servo8.angle = 90 - angle0 #chua fix
+    servo8.angle = 90 + angle0 
     time.sleep(time_stop)
+    servo9.angle = 90 - angle1
+    time.sleep(time_stop)
+    servo10.angle = 180- angle2
+    time.sleep(time_stop)
+def Rot_Arm_RH_2(angle1, angle2):
     servo9.angle = 90 - angle1
     time.sleep(time_stop)
     servo10.angle = 180- angle2
     time.sleep(time_stop)
 
 def Rot_Arm_LH(angle0, angle1, angle2):
-    servo12.angle = 90 + angle0 #chua fix
+    servo12.angle = 90 - angle0 #chua fix
     time.sleep(time_stop)
+    servo13.angle = 90 + angle1
+    time.sleep(time_stop)
+    servo14.angle = angle2
+    time.sleep(time_stop)
+def Rot_Arm_LH_2(angle1, angle2):
     servo13.angle = 90 + angle1
     time.sleep(time_stop)
     servo14.angle = angle2
@@ -69,14 +93,14 @@ def Rot_Arm_LH(angle0, angle1, angle2):
 
 def Rot_Arm_Rot_Forward_First(angle0, angle1, angle2):
     Rot_Arm_RF(angle0, angle1, angle2)
-    time.sleep(0.01)
+    time.sleep(time_stop)
     Rot_Arm_LH(angle0, angle1, angle2)
 
 def Rot_Arm_Rot_Forward_Second(angle0, angle1, angle2):
     Rot_Arm_LF(angle0, angle1, angle2)
-    time.sleep(0.01)
+    time.sleep(time_stop)
     Rot_Arm_RH(angle0, angle1, angle2)
-    time.sleep(0.01)
+    time.sleep(time_stop)
 def Default_legs_1():
     Rot_Angle(servo0,90)
     time.sleep(0.05)
@@ -104,13 +128,47 @@ def Default_legs_3():
     time.sleep(0.05)
     Rot_Angle(servo14,180)
     time.sleep(0.05)
-def Stand():
-    # dua cac chan 1 ve khong do  
-    # dua cac chan ve goc chuan
+def Controll_Downup():
+    anpha = 45
+    for i in range(0,anpha,1):
+        # khau 2
+        servo1.angle = (180-anpha) + i # tuc la chay toi 120 do
+        servo5.angle = anpha - i
+        time.sleep(spam_time)
+        servo9.angle = (180-anpha) + i
+        servo13.angle = anpha - i
+        time.sleep(spam_time)
+        # khau 3
+        servo2.angle = 1.5*(anpha-i)
+        servo6.angle = (180 - 1.5*anpha) + 1.5*i
+        time.sleep(spam_time)
+        servo10.angle = 1.5*(anpha - i)
+        servo14.angle = (180 - 1.5*anpha) + 1.5*i
+        time.sleep(spam_time)
+
+def Standup():
+    spam_time = 0.05
+    anpha = 45
+    time_anpha = 1.5
+    for i in range(0,anpha,1):
+        # khau 2
+        servo1.angle = 180 - i # tuc la chay toi 120 do
+        servo5.angle = i
+        time.sleep(spam_time)
+        servo9.angle = 180 - i
+        servo13.angle = i
+        time.sleep(spam_time)
+        # khau 3
+        servo2.angle = time_anpha*i
+        servo6.angle = 180 - time_anpha*i
+        time.sleep(spam_time)
+        servo10.angle = time_anpha*i
+        servo14.angle = 180 - time_anpha*i
+        time.sleep(spam_time)
+
+def Dowwnup():
     Default_legs_1()
-    Default_legs_2()
-    Default_legs_3() 
-    # dua cac chan ve trang thai
-    Controll_Standup()
+    time.sleep(spam_time)
+    Controll_Downup()
 pca.deinit()
 
